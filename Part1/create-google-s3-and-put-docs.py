@@ -1,16 +1,10 @@
 # Creator: Abir Chebbi (abir.chebbi@hesge.ch)
 # modify : Quentin Saucy
+# modify : Jonas Flückiger
 
-# installer le paquet google.cloud.storage
-# install google cli
-# create gcloud project
-# change the billing project
-import boto3
 import os
 import argparse
-
 from google.cloud import storage
-# python create-google-s3-and-put-docs.py --bucket_name gr12-qs-s3
 
 
 def create_bucket(bucket_name):
@@ -23,35 +17,41 @@ def create_bucket(bucket_name):
 
     print(f"Bucket {bucket.name} created")
     return bucket
-# Function to write files to S3
 
 
-def write_files(s3_client, directory, bucket):
-    print("write")
-    generation_match_precondition = 0
-    for filename in os.listdir(directory):
-        if filename.endswith(".pdf"):  # Check if the file is a PDF
-            # file_path = os.path.join(directory, filename)
-            print(f"Uploading {filename} to bucket {bucket}...")
-            s3_client.upload_from_filename(
-                directory+"/"+filename, if_generation_match=generation_match_precondition)
+# Function to write files to bucket
+def upload_pdf_files(bucket_name, source_folder):
+    # Initialize the GCS client
+    client = storage.Client()
 
-            print(f"{filename} uploaded successfully.")
+    # Get the bucket
+    bucket = client.get_bucket(bucket_name)
+
+    # Loop through the files in the local folder
+    for file_name in os.listdir(source_folder):
+        if file_name.endswith(".pdf"):
+            # Full local path of the file
+            local_file_path = os.path.join(source_folder, file_name)
+
+            # Upload the PDF file
+            # Use the file name as the GCS object name
+            blob = bucket.blob(file_name)
+            blob.upload_from_filename(local_file_path)
+
+            print(f"Uploaded {file_name} to bucket {bucket_name}.")
 
 
 def main(bucket_name, local_dir):
-    s3_client = create_bucket(bucket_name)
-    s3_client = s3_client.blob("qs_test")
-
-    write_files(s3_client, local_dir, bucket_name)
+    create_bucket(bucket_name)
+    upload_pdf_files(bucket_name, local_dir)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Upload PDF files to an S3 bucket")
+        description="Upload PDF files to a GCS bucket")
     parser.add_argument(
-        "--bucket_name", help="The name of the S3 bucket to which the files will be uploaded")
+        "--bucket_name", help="The name of the GCS bucket to which the files will be uploaded")
     parser.add_argument(
-        "--local_path", help="The name of the folder to put the pdf files")
+        "--local_path", help="The name of the folder where the pdf files are located")
     args = parser.parse_args()
     main(args.bucket_name, args.local_path)
