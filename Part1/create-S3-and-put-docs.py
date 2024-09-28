@@ -1,7 +1,6 @@
 # Creator: Abir Chebbi (abir.chebbi@hesge.ch)
 
 
-
 import boto3
 import os
 import argparse
@@ -29,15 +28,19 @@ def write_files(s3_client, directory, bucket):
                 )
                 print(f"{filename} uploaded successfully.")
 
+
 def main(bucket_name, local_dir):
     s3_client = boto3.client('s3')
     create_bucket(s3_client, bucket_name)
     write_files(s3_client, local_dir, bucket_name)
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Upload PDF files to an S3 bucket")
-    parser.add_argument("--bucket_name", help="The name of the S3 bucket to which the files will be uploaded")
-    parser.add_argument("--local_path", help="The name of the folder to put the pdf files")
+    parser = argparse.ArgumentParser(
+        description="Upload PDF files to an S3 bucket")
+    parser.add_argument(
+        "--bucket_name", help="The name of the S3 bucket to which the files will be uploaded")
+    parser.add_argument(
+        "--local_path", help="The name of the folder to put the pdf files")
     args = parser.parse_args()
     main(args.bucket_name, args.local_path)
-

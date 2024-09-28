@@ -20,7 +20,7 @@ bucket.objects.all().delete()
 print("Deleting Bucket")
 # Bucket Deletion
 response = S3_CLIENT.delete_bucket(
-    Bucket=BUCKET_NAME 
+    Bucket=BUCKET_NAME
 
 )
 

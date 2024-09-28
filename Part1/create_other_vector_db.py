@@ -1,5 +1,5 @@
 # Creator: Abir Chebbi (abir.chebbi@hesge.ch)
-## Source: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-sdk.html
+# Source: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-sdk.html
 
 
 import boto3
@@ -11,7 +11,6 @@ client = boto3.client('opensearchserverless')
 
 
 # service = 'aoss'
-
 def createEncryptionPolicy(client, policy_name, collection_name):
     """Creates an encryption policy for the specified collection."""
     try:
@@ -146,7 +145,8 @@ def main(collection_name, IAM_USER):
     createEncryptionPolicy(client, encryption_policy_name, collection_name)
     createNetworkPolicy(client, network_policy_name, collection_name)
     createAccessPolicy(client, access_policy_name, collection_name, IAM_USER)
-    collection = client.create_collection(name=collection_name, type='VECTORSEARCH')
+    collection = client.create_collection(
+        name=collection_name, type='VECTORSEARCH')
     ENDPOINT = waitForCollectionCreation(client, collection_name)
 
     print("Collection created successfully:", collection)

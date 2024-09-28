@@ -1,5 +1,5 @@
 # Creator: Abir Chebbi (abir.chebbi@hesge.ch)
-## Source: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-sdk.html
+# Source: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-sdk.html
 
 
 import boto3
@@ -9,9 +9,10 @@ import argparse
 
 
 client = boto3.client('opensearchserverless')
-#service = 'aoss'
+# service = 'aoss'
 
-def createEncryptionPolicy(client,policy_name, collection_name):
+
+def createEncryptionPolicy(client, policy_name, collection_name):
     """Creates an encryption policy for the specified collection."""
     try:
         response = client.create_security_policy(
@@ -42,7 +43,7 @@ def createEncryptionPolicy(client,policy_name, collection_name):
             raise error
 
 
-def createNetworkPolicy(client,policy_name,collection_name):
+def createNetworkPolicy(client, policy_name, collection_name):
     """Creates a network policy for the specified collection."""
     try:
         response = client.create_security_policy(
@@ -124,14 +125,12 @@ def createAccessPolicy(client, policy_name, collection_name, IAM_USER):
         else:
             raise error
 
-        
 
-        
-def waitForCollectionCreation(client,collection_name):
+def waitForCollectionCreation(client, collection_name):
     """Waits for the collection to become active"""
     time.sleep(30)
     response = client.batch_get_collection(
-            names=[collection_name])
+        names=[collection_name])
     print('\nCollection successfully created:')
     print(response["collectionDetails"])
     # Extract the collection endpoint from the response
@@ -140,22 +139,24 @@ def waitForCollectionCreation(client,collection_name):
     return final_host
 
 
-def main(collection_name,IAM_USER):
+def main(collection_name, IAM_USER):
     encryption_policy_name = f'{collection_name}-encryption-policy'
     network_policy_name = f'{collection_name}-network-policy'
     access_policy_name = f'{collection_name}-access-policy'
     createEncryptionPolicy(client, encryption_policy_name, collection_name)
     createNetworkPolicy(client, network_policy_name, collection_name)
-    createAccessPolicy(client, access_policy_name, collection_name,IAM_USER)
-    collection = client.create_collection(name=collection_name,type='VECTORSEARCH')
-    ENDPOINT= waitForCollectionCreation(client,collection_name)
+    createAccessPolicy(client, access_policy_name, collection_name, IAM_USER)
+    collection = client.create_collection(
+        name=collection_name, type='VECTORSEARCH')
+    ENDPOINT = waitForCollectionCreation(client, collection_name)
 
     print("Collection created successfully:", collection)
     print("Collection ENDPOINT:", ENDPOINT)
 
-if __name__== "__main__":
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Create collection")
     parser.add_argument("--collection_name", help="The name of the collection")
     parser.add_argument("--iam_user", help="The iam user")
     args = parser.parse_args()
-    main(args.collection_name,args.iam_user)
+    main(args.collection_name, args.iam_user)

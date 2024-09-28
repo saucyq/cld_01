@@ -1,8 +1,10 @@
 # install
 pip install google.cloud.storage
 https://cloud.google.com/sdk/docs/install?hl=fr
+
 ## auth google
 gcloud auth application-default login
+
 ## create gcloud project
 gcloud projects create "uniqueID"
 setup the billing on your project https://console.cloud.google.com/billing/projects
