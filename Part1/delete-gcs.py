@@ -1,7 +1,7 @@
 from google.cloud import storage
 
 
-bucket_name = "gr12-qs-3"
+bucket_name = "gr12_qs_s3"
 
 storage_client = storage.Client()
 # Delete all blobs in the bucket
